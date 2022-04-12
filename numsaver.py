@@ -1,21 +1,7 @@
-import time
 import cv2
 import mss
 import numpy as np
-from pynput.mouse import Button, Controller
-from pynput.keyboard import Listener, KeyCode
-
-def changeToGrayScale(array):
-    # if pixel is not white, change to black
-    # if pixel is white, change to white
-    new_array = np.zeros(array.shape[0:2])
-    for i in range(len(array)):
-        for j in range(len(array[i])):
-            if array[i][j][0] < 240 or array[i][j][1] < 240 or array[i][j][2] < 240:
-                new_array[i][j] = 0
-            else:
-                new_array[i][j] = 255
-    return new_array
+from utils import changeToGrayScale
 
 def loadNums(display=False):
     with open('nums.npy', 'rb') as f:
@@ -115,6 +101,8 @@ def inNumpyList(arr, list):
     return False
 
 if __name__ == "__main__":
-    saveNums()
+    """ saveNums()
     loadNums(True)
-    testNums()
+    testNums() """
+
+    cv2.imshow()

@@ -7,6 +7,8 @@ gameOverPosition = (591, 748)
 namePosition = (762, 640)
 resetPosition = (756, 790)
 scorePosition = (635, 658)
+headsPosition = (802, 436)
+tailsPosition = (790, 458)
 
 flipDelay = 0.75
 choiceDelay = 2.5

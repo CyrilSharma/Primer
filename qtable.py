@@ -3,8 +3,7 @@ import numpy as np
 import csv
 from bruteforce import tablePrint
 from tqdm import tqdm
-
-from utils import bayesianUpdate, probSequence
+from utils import bayesianUpdate, probSequence, loadFromFile
 
 def main():
     train()
@@ -57,6 +56,38 @@ class coinSimulator():
         self.gameOver = False
         self.score = 0
         self.flips = 100
+
+def test(stateActionMap):
+    simulator = coinSimulator()
+    numSims = 10
+    maxScore = 0
+    avgScore = 0
+    for i in tqdm(range(numSims)):
+        prior = np.ones(2) * 1 / 2
+        simulator.reset()
+        while simulator.gameOver is False:
+            if (simulator.numHeads, simulator.numTails) in stateActionMap:
+                action = stateActionMap[(simulator.numHeads, simulator.numTails)]
+            else:
+                action = np.random.choice([0,1], p=[0.75,0.25])
+            
+            if action == 0:
+                coinFlip = simulator.flip()
+                prior = bayesianUpdate(prior, coinFlip, np.array([0.5, 0.75]))
+            else:
+                maxIndex = np.argmax(prior)
+                if maxIndex == 0:
+                    choice = "fair"
+                else:
+                    choice = "cheater"
+                outcome = simulator.choose(choice)
+                prior = np.ones(2) * 1 / 2
+
+        maxScore = max(simulator.score, maxScore)
+        avgScore += simulator.score
+    avgScore /= numSims
+    print(f"Average Score: {avgScore} | Max Score: {maxScore}")
+
 
 # (s, a, value)
 def train():
@@ -151,4 +182,7 @@ def train():
     for key, val in stateActionMap.items():
         w.writerow([key, val])
 
-main()
+if __name__ == "__main__":
+    actionMap = loadFromFile()
+    test(actionMap)
+    # main()
