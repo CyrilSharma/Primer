@@ -32,16 +32,20 @@ class Bot(Autoclicker):
         self.savedImages["tails"] = grabScreen(c.tailsPosition, 30, 20)
     
     def chooseMove(self):
-        img = grabScreen(c.headsPosition, 30, 20)
-        numHeads = determineNumber(img)
+        headsImg = grabScreen(c.headsPosition, 30, 20)
+        numHeads = determineNumber(headsImg)
 
         # error correction
         if numHeads is None:
             return c.flip_position
 
         headsUpdate, tailsUpdate = self.findUpdates()
+        if (headsUpdate == 1 and tailsUpdate == 1):
+            if (self.logic.moves == 0):
+                headsUpdate = numHeads if (numHeads == 1 or numHeads == 0) else 1
+                tailsUpdate = 1 - numHeads if (numHeads == 1 or numHeads == 0) else 0
         print(f"H+ {headsUpdate} | L+ {tailsUpdate}")
-        self.logic.update(numHeads)
+        self.logic.update(headsUpdate)
 
         action = self.logic.getAction()
         if action != 0:
@@ -104,7 +108,7 @@ class Bot(Autoclicker):
                 self.fetchImages()
                 self.mouse.position = move
                 self.mouse.press(Button.left)
-                time.sleep(0.5)
+                time.sleep(0.125)
                 self.mouse.release(Button.left)
                 if move == c.flip_position:
                     time.sleep(c.flipDelay)

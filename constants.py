@@ -10,7 +10,7 @@ scorePosition = (635, 658)
 headsPosition = (802, 436)
 tailsPosition = (790, 458)
 
-flipDelay = 0.75
+flipDelay = 0.50
 choiceDelay = 2.5
 numBiases = 51
 lossValue = -30

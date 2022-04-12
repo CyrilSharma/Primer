@@ -9,11 +9,9 @@ class LogicHandler():
         self.stateEvaluator = loadFromFile()
         self.moves = 0
     
-    def update(self, heads):
-        coinFlip = heads - self.numHeads
-        print(f"Coin Flip: {coinFlip}")
+    def update(self, coinFlip):
         self.prior = bayesianUpdate(self.prior, coinFlip, np.array([0.5, 0.75]))
-        self.numHeads = heads
+        self.numHeads += coinFlip
         self.numTails += 0 if coinFlip == 1 else 1
         self.moves += 1
     
