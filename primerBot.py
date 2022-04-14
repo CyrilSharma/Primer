@@ -1,10 +1,8 @@
 import time
 import numpy as np
 import constants as c
-from pynput.mouse import Button, Controller
-import pynput.keyboard as pynputKeyboard
-from pynput.keyboard import Key
 from autoclicker import Autoclicker
+import pyautogui
 from logic import LogicHandler
 from utils import determineEquality, determineNumber, grabScreen, loadFromFile
 
@@ -13,16 +11,11 @@ class Bot(Autoclicker):
         super().__init__()
         self.logic = LogicHandler()
         self.savedImages = {}
-        self.mouse = Controller()
-        self.keyboard = pynputKeyboard.Controller()
         self.initialized = False
     
     def initialize(self):
         if not self.initialized:
-            self.mouse.position = c.empty_position
-            for _ in range(3):
-                self.mouse.click(Button.left, 1)
-                time.sleep(1.0)
+            pyautogui.click(x = c.empty_position[0], y = c.empty_position[1], clicks=3, interval=0.5)
             self.fetchImages()
             self.initialized = True
     
@@ -60,17 +53,6 @@ class Bot(Autoclicker):
             self.logic.reset()
             return c.cheater_position
     
-    def clickCheckBox(self):
-        self.mouse.position = c.animation_position
-        self.mouse.click(Button.left, 1)
-        time.sleep(0.5)
-    
-    def commandRefresh(self):
-        self.keyboard.press(Key.cmd)
-        self.keyboard.press('r')
-        self.keyboard.release('r')
-        self.keyboard.release(Key.cmd)
-    
     def findUpdates(self):
         imgH = grabScreen(c.headsPosition, 30, 20)
         imgT = grabScreen(c.tailsPosition, 30, 20)
@@ -89,15 +71,13 @@ class Bot(Autoclicker):
             return True
     
     def gameOver(self):
-        self.mouse.position = c.namePosition
-        self.mouse.click(Button.left, 1)
-        self.keyboard.type('Knota Scrypt')
-        self.mouse.position = c.gameOverPosition
-        self.mouse.click(Button.left, 1)
+        pyautogui.click(x = c.namePosition[0], y = c.namePosition[1])
+        pyautogui.typewrite('zetaSquare')
+        pyautogui.click(x = c.gameOverPosition[0], y = c.gameOverPosition[1])
         time.sleep(1.0)
-        self.commandRefresh()
+        pyautogui.hotkey('cmd', 'r')
         time.sleep(8.0)
-        self.clickCheckBox()
+        pyautogui.click(x = c.animation_position[0], y = c.animation_position[1])
         self.fetchImages()
 
     def run(self):
@@ -106,10 +86,7 @@ class Bot(Autoclicker):
                 self.initialize()
                 move = self.chooseMove()
                 self.fetchImages()
-                self.mouse.position = move
-                self.mouse.press(Button.left)
-                time.sleep(0.125)
-                self.mouse.release(Button.left)
+                pyautogui.click(x = move[0], y = move[1])
                 if move == c.flip_position:
                     time.sleep(c.flipDelay)
                 else:
